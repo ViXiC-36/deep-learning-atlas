@@ -1,24 +1,32 @@
 # Validation record — 2026-11-04
 
-Validated application commit: eb2d1911720081c8b575c45361079b8b9d074fd5.
+Validated and deployed application commit: `8844e36f1e2d10710ea698d3be5ef73e9481aca4`.
 
-[Successful GitHub Actions build and deployment](https://github.com/ViXiC-36/deep-learning-atlas/actions/runs/41795361062). Later documentation-only changes do not change the tested application.
+[Successful GitHub Actions build and deployment](https://github.com/ViXiC-36/deep-learning-atlas/actions/runs/41808107976). Later documentation-only changes do not change the tested application.
+
+## Published scope
+
+- 66 chapters cover all 101 curriculum topics across eight modules. Related topics may share a substantial chapter.
+- 484 learning sections, 113 displayed equations with local notation definitions and Chinese readings, and 71 independent Python/PyTorch code examples.
+- Every chapter includes a computation-flow diagram and a small self-check. The four original numerical playgrounds and Transformer explorer remain interactive; new chapters use explanation, diagrams and code examples.
+- Notation is visible without hovering. Optional focus reading hides surrounding navigation and persists in browser storage. Existing chapter links, learning records and themes remain compatible.
 
 ## Passed
 
-- The public repository deployed successfully to [Deep Learning Atlas](https://vixic-36.github.io/deep-learning-atlas/). GitHub Pages reported success on 2026-11-04 at 15:54 CST (07:54 UTC).
-- Pages artifact names include the build attempt, and the deploy job consumes the build output. This prevents duplicate-artifact selection after a workflow rerun.
+- 19 Node tests: numerical invariants, architecture shapes, full curriculum coverage, content structure, and KaTeX rendering of every equation and notation entry.
+- TypeScript strict checking and Vite production build on Node.js 24.
+- All 71 Python examples executed independently with no failures. CI installed CPU PyTorch 2.7.0 and NumPy; examples require no private data, credentials or downloaded model weights.
+- 19 Chromium browser tests: all 66 chapters at all three reading depths; visible notation before equations; persistent focus mode; old topic-link redirects; theme/search/completion persistence; original playground interactions; 390px mobile and 768px tablet overflow checks.
+- GitHub Pages reported deployment success on 2026-11-04 at 17:34 CST (09:34 UTC).
+- A post-deployment HTTP check loaded the live HTML and its referenced JavaScript/CSS assets successfully: [Deep Learning Atlas](https://vixic-36.github.io/deep-learning-atlas/).
+- Source files transferred through the GitHub integration were checked against local Git blob hashes before committing.
 
-- Dependency installation, TypeScript strict checking and Vite production build on Node.js 24 in GitHub Actions.
-- 18 unit tests: finite-difference gradients, convolution orientation/padding/stride, attention softmax/masking, exact CTC path sums, Transformer shapes/788-parameter inventory/normalization/residuals, content IDs and graph destinations.
-- 8 Chromium browser tests: repository subpath and direct hash refresh; four chapters with formulas/code; persisted theme/search/completion; parameter edits and resets in all four experiments; 390px mobile and 768px tablet overflow checks across seven routes.
-- The first browser run found inaccessible slider names caused by an output element inside an implicit label. Explicit accessible names fixed Backprop inputs, learning rate and Attention temperature; the second run passed all tests.
-- Screenshots, traces/report and the generated dependency lock are retained in the validation-evidence-<attempt> artifact. Production dist is retained in the github-pages-<attempt> artifact.
-- Eight Python examples pass syntax checks. Pure-Python CTC examples execute with assertions; attention example arithmetic was independently checked.
+## Review notes and limits
 
-## Remaining limits
+- Cross-review checked multi-channel convolution dimensions and reused symbols, CTC indexing and unreachable states, RNN-T paths, speech pretraining targets, DPO/PPO/GRPO distinctions, KV-cache arithmetic, and FlashAttention normalization. Automated tests do not prove that every explanation is semantically exhaustive.
+- The first V0.2 run passed the mathematical and Python checks, then found a missing JSX delimiter in the reading-depth keyboard handler. It was fixed; the complete run linked above passed.
+- Browser screenshots are retained with the test artifacts, but manual pixel-level review was not performed. Browser tests use Chromium; iPad Safari has not been tested directly.
+- The generated package-lock.json remains in the CI validation artifact and is not yet committed. The workflow uses npm ci when a lockfile is present and npm install otherwise.
+- CI retains `validation-evidence-<attempt>` and `github-pages-<attempt>` artifacts for their configured retention periods.
 
-- Post-deployment manual browsing could not be completed because the browser connection timed out; the web retrieval tool also could not access the newly published URL. Deployment success is verified from GitHub Pages logs, and the production build passed Chromium tests before publishing.
-- Screenshots were generated by the browser tests, but downloading them into this local workspace was blocked, so manual pixel-level visual inspection is not claimed.
-- PyTorch examples were not executed locally because PyTorch is unavailable.
-- The generated package-lock.json is in the CI artifact, not yet committed; the workflow prefers npm ci once it is present.
+For future content updates, follow [the writing and symbol-definition guide](writing-guide.md).
