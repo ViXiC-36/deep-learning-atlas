@@ -45,6 +45,9 @@ jobs:
       - name: Test numerical logic
         run: npm test
 
+      - name: Typecheck and build static site
+        run: npm run build
+
       - name: Install CPU PyTorch for chapter examples
         run: |
           python -m pip install --quiet torch==2.7.0 --index-url https://download.pytorch.org/whl/cpu
@@ -52,9 +55,6 @@ jobs:
 
       - name: Execute every chapter code example
         run: node --experimental-strip-types scripts/check-examples.mjs --execute
-
-      - name: Typecheck and build static site
-        run: npm run build
 
       - name: Install browser for app tests
         run: npx playwright install --with-deps chromium
