@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pages_enabled: ${{ steps.pages.outputs.enabled }}
+      pages_artifact: github-pages-${{ github.run_attempt }}
     permissions:
       contents: read
       pages: read
@@ -57,7 +58,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: validation-evidence
+          name: validation-evidence-${{ github.run_attempt }}
           path: |
             test-results/
             playwright-report/
@@ -82,6 +83,7 @@ jobs:
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v4
         with:
+          name: github-pages-${{ github.run_attempt }}
           path: dist
 
   deploy:
@@ -100,3 +102,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ needs.build.outputs.pages_artifact }}
