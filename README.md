@@ -24,7 +24,7 @@
 
 ## 本次交付验证状态
 
-完整源码已提交到 [ViXiC-36/deep-learning-atlas](https://github.com/ViXiC-36/deep-learning-atlas)。GitHub Actions 已完成依赖安装、18 项单元测试、TypeScript 检查和 Vite 生产构建。浏览器测试与 Pages 状态请查看最新 [Actions 运行](https://github.com/ViXiC-36/deep-learning-atlas/actions)。详细验证记录见 [docs/validation.md](docs/validation.md)。
+完整源码已提交到 [ViXiC-36/deep-learning-atlas](https://github.com/ViXiC-36/deep-learning-atlas)。GitHub Actions 已通过依赖安装、18 项单元测试、TypeScript 检查、Vite 生产构建和 8 项 Chromium 浏览器测试（含 390px 手机与 768px 平板）。[成功的验证运行](https://github.com/ViXiC-36/deep-learning-atlas/actions/runs/41781690268)。Pages API 当前返回 404，部署尚未执行；请先在 Settings → Pages 中选择 GitHub Actions。详细验证记录见 [docs/validation.md](docs/validation.md)。
 
 ## 本地运行
 
@@ -47,7 +47,7 @@ npm run preview
 - `npm run build`：TypeScript 检查并生成 `dist/` 静态网站。
 - `npm run preview`：本地检查生产构建。
 
-当前交付环境无法联网安装依赖，因此未生成锁文件。首次运行 `npm install` 会生成 `package-lock.json`；请提交它，后续使用 `npm ci`。工作流在有锁文件时使用 `npm ci`，否则使用 `npm install`。
+云端安装生成的 `package-lock.json` 已保存在成功运行的 `validation-evidence` artifact 中，尚未回写源码；可下载并提交该文件固定依赖。首次本地运行 `npm install` 也会生成锁文件。工作流在有锁文件时使用 `npm ci`，否则使用 `npm install`。
 
 ## GitHub Pages 部署
 
