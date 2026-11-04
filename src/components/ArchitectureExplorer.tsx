@@ -1,3 +1,5 @@
+import SymbolKey from './SymbolKey';
+import {stageSymbols,attentionSymbols} from './architectureSymbols';
 import { useEffect, useMemo, useState } from 'react';
 import katex from 'katex';
 import './architecture.css';
@@ -44,7 +46,7 @@ export default function ArchitectureExplorer({ model = 'transformer' }: { model?
 
   return <section className="architecture-explorer" aria-label="Transformer 架构探索器">
     <header className="arch-header"><div><span className="arch-eyebrow">ARCHITECTURE EXPLORER</span><h3>走进一个 Transformer</h3></div><span className="arch-total">{architectureParameterTotal} <small>parameters</small></span></header>
-    <p className="arch-intro">一个真实计算的微型 Pre-LN 模型：T=4 · d=8 · heads=2 · d<sub>ff</sub>=16 · vocab=12。{model !== 'transformer' && model !== 'attention' ? '此处展示可交互的 Transformer 示例。' : ''} 权重为确定性教学数值，未经训练，输出不代表语言理解。</p>
+    <p className="arch-intro">一个真实计算的微型 Transformer：4 个词元，每个有 8 个特征，2 个注意力头，前馈中间层有 16 个特征，词表包含 12 个词元。Pre-LN 表示每个计算分支前先做层归一化。{model !== 'transformer' && model !== 'attention' ? '此处展示可交互的 Transformer 示例。' : ''} 权重为确定性教学数值，未经训练，输出不代表语言理解。</p>
     <div className="arch-controls">
       <button type="button" onClick={() => { if (step === stages.length - 1) setStep(0); setPlaying(value => !value); }} disabled={!motion}>{playing ? '暂停' : '播放数据流'}</button>
       <button type="button" onClick={() => chooseStep((step + 1) % stages.length)}>下一步</button>
@@ -54,10 +56,11 @@ export default function ArchitectureExplorer({ model = 'transformer' }: { model?
     </div>
     <div className="arch-workspace">
       <nav className="arch-pipeline" aria-label="模型组件"><div className="arch-token-strip">{tokens.map((token, i) => <span key={i}>{token}</span>)}</div>{stages.map((item, index) => <button type="button" key={item.id} className={`arch-stage ${index === step ? 'selected' : ''} ${index < step ? 'passed' : ''}`} aria-pressed={index === step} onClick={() => chooseStep(index)}><span className="arch-stage-index">{String(index + 1).padStart(2, '0')}</span><span><strong>{item.title}</strong><small>{item.shape}</small></span></button>)}</nav>
-      <div className="arch-detail"><div className="arch-detail-heading"><span>STEP {String(step + 1).padStart(2, '0')} / 08</span><span>{stage.parameters} 个参数</span></div><h4>{stage.title}</h4><p>{stage.explanation}</p><Formula value={stage.formula} />
+      <div className="arch-detail"><div className="arch-detail-heading"><span>STEP {String(step + 1).padStart(2, '0')} / 08</span><span>{stage.parameters} 个参数</span></div><h4>{stage.title}</h4><SymbolKey items={stageSymbols[stage.id]}/><p>{stage.explanation}</p><Formula value={stage.formula} />
         {stage.id === 'attention' ? <>
           <div className="arch-subcontrols"><span>选择 head</span>{[0, 1].map(index => <button key={index} type="button" className={head === index ? 'active' : ''} aria-pressed={head === index} onClick={() => setHead(index)}>Head {index + 1}</button>)}</div>
           <div className="arch-tabs" role="group" aria-label="注意力计算步骤">{([['qkv', '① Q · K · V'], ['scores', '② Scores'], ['weights', '③ Softmax'], ['output', '④ 输出']] as const).map(([key, label]) => <button key={key} type="button" className={attentionView === key ? 'active' : ''} aria-pressed={attentionView === key} onClick={() => setAttentionView(key)}>{label}</button>)}</div>
+          <SymbolKey items={attentionSymbols[attentionView]} title="这一步的符号"/>
           {attentionView === 'qkv' && <><Formula value={String.raw`Q_h=XW_{Q,h},\ K_h=XW_{K,h},\ V_h=XW_{V,h}\quad\in\mathbb{R}^{4\times4}`} /><div className="arch-matrices">{(['q', 'k', 'v'] as const).map(key => <MatrixView key={key} label={key.toUpperCase()} matrix={selectedHead[key]} />)}</div><p className="arch-note">这里 X 是第一处归一化的输出。每个 head 选取投影结果中的四列，各自计算注意力。</p></>}
           {attentionView === 'scores' && <><Formula value={String.raw`S_{ij}=\frac{q_i\cdot k_j}{\sqrt4}+M_{ij}`} /><MatrixView label="Scores · 行 query / 列 key" matrix={selectedHead.scores} /><p className="arch-note">{causal ? '未来位置在 softmax 前被设为 −∞，每一行只允许读取当前位置及之前的位置。' : '关闭 mask 后每个位置都能读取整个序列，这是双向自注意力；其预测头不再具有严格的自回归约束。'}</p></>}
           {attentionView === 'weights' && <><Formula value={String.raw`A_{ij}=\frac{\exp(S_{ij})}{\sum_k\exp(S_{ik})}`} /><MatrixView label="Attention · 每行和为 1" matrix={selectedHead.attention} probability /><p className="arch-note">行和：{selectedHead.attention.map(row => row.reduce((sum, x) => sum + x, 0).toFixed(4)).join(' · ')}。实现先减去行最大值以避免溢出。</p></>}

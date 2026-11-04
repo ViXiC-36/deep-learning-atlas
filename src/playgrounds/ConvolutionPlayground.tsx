@@ -1,3 +1,4 @@
+import SymbolKey from '../components/SymbolKey';
 import { useEffect, useMemo, useState } from 'react';
 import { crossCorrelate2d } from '../lib/math';
 import './playgrounds.css';
@@ -74,6 +75,7 @@ export default function ConvolutionPlayground() {
   }
 
   return <section className="lab convolution-lab" aria-label="卷积交互实验">
+    <SymbolKey items={[["X、K、Y","X 是输入；K 是本实验的卷积核（正文公式用 W 表示同一类核权重）；Y 是输出。"],["[行,列]","矩阵位置，从 0 编号。例如 X[0,1] 是第一行第二列。"],["5×5、3×3","形状：前一个数是行数，后一个数是列数。"],["Stride、Padding","Stride 是步幅，每次移动几格；Padding 是在每侧补多少格零。"],["⌊…⌋","向下取整：保留不超过括号里数值的最大整数。例如 ⌊3.8⌋=3。"]]}/>
     <div className="lab-controls">
       <label>步幅 Stride <select value={stride} onChange={event => { setStride(Number(event.target.value)); setPosition(0); setPlaying(false); }}>
         <option value={1}>1</option><option value={2}>2</option>

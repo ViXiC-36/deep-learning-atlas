@@ -45,6 +45,14 @@ jobs:
       - name: Test numerical logic
         run: npm test
 
+      - name: Install CPU PyTorch for chapter examples
+        run: |
+          python -m pip install --quiet torch==2.7.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install --quiet numpy
+
+      - name: Execute every chapter code example
+        run: node --experimental-strip-types scripts/check-examples.mjs --execute
+
       - name: Typecheck and build static site
         run: npm run build
 
@@ -104,3 +112,29 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: ${{ needs.build.outputs.pages_artifact }}
+
+      - name: Verify published HTML and assets
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import os, re, time, urllib.request
+          from urllib.parse import urljoin
+          url = os.environ['SITE_URL']
+          for attempt in range(6):
+              try:
+                  with urllib.request.urlopen(url, timeout=20) as response:
+                      html = response.read().decode('utf-8')
+                  assert 'Deep Learning Atlas' in html, 'Unexpected page title'
+                  assets = re.findall(r'(?:src|href)="([^\"]+\.(?:js|css))"', html)
+                  assert assets, 'No production JavaScript or CSS assets found'
+                  for asset in assets:
+                      with urllib.request.urlopen(urljoin(url, asset), timeout=20) as response:
+                          assert response.status == 200 and response.read(1), asset
+                  print('Live site verified:', url, 'Assets:', len(assets))
+                  break
+              except Exception:
+                  if attempt == 5:
+                      raise
+                  time.sleep(5)
+          PY

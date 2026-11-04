@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { chapters } from '../../src/content/chapters';
 
 const runtimeErrors = new WeakMap<Page, string[]>();
 test.beforeEach(async ({ page }) => {
@@ -147,3 +148,64 @@ for (const viewport of [{ name: 'mobile', width: 390, height: 844 }, { name: 'ta
     }
   });
 }
+
+test('notation is visible before equations and focus reading persists without hiding content', async ({ page }) => {
+  await page.goto('./#/chapter/convolution');
+  await page.getByRole('tab', { name: /^深入/ }).click();
+  const firstSection=page.locator('#lesson-panel .lesson-section').first();
+  await expect(firstSection.getByRole('heading', { name:'先认符号' })).toBeVisible();
+  await expect(firstSection.locator('.formula-reading')).toBeVisible();
+  await expect(firstSection.locator('.notation-guide')).toContainText('高度');
+  expect(await firstSection.evaluate(section=>{
+    const key=section.querySelector('.notation-guide')!;
+    const formula=section.querySelector('.formula')!;
+    return !!(key.compareDocumentPosition(formula)&Node.DOCUMENT_POSITION_FOLLOWING);
+  })).toBe(true);
+  await page.getByRole('button', {name:'专注阅读',exact:true}).click();
+  await expect(page.locator('.reader-layout')).toHaveClass(/focus-reading/);
+  await expect(page.locator('.sidebar')).toBeHidden();
+  await expect(firstSection).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('button', {name:'退出专注阅读'})).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button', {name:'退出专注阅读'}).click();
+  await expect(page.locator('.sidebar')).toBeVisible();
+});
+
+for(const moduleId of [0,1,2,3,4,5,6,7]) {
+ test(`module ${moduleId}: every published chapter opens at all three reading depths`,async({page})=>{
+  test.setTimeout(180000);
+  for(const chapter of chapters.filter(item=>item.module===moduleId)) {
+    await page.goto(`./#/chapter/${chapter.id}`);
+    await expect(page.locator('.lesson h1')).toHaveText(chapter.title);
+    for(const mode of ['速通','深入','实现']) {
+      await page.getByRole('tab',{name:new RegExp('^'+mode)}).click();
+      await expect(page.locator('#lesson-panel .lesson-section').first()).toBeVisible();
+      await expect(page.locator('#lesson-panel .katex-error')).toHaveCount(0);
+      if(mode==='实现') await expect(page.locator('#lesson-panel pre code').first()).toBeVisible();
+    }
+  }
+ });
+}
+
+test('all curriculum entries link to lessons and older topic bookmarks redirect',async({page})=>{
+ await page.goto('./#/curriculum');
+ await expect(page.locator('.curriculum-module')).toHaveCount(8);
+ await expect(page.locator('.topic-grid .planned-pill')).toHaveCount(0);
+ await page.goto('./#/topic/optimizers');
+ await expect(page).toHaveURL(/#\/chapter\//);
+ await expect(page.locator('.lesson h1')).toBeVisible();
+});
+
+test('new long symbol guides and flow diagrams fit mobile and tablet widths',async({page},testInfo)=>{
+ for(const width of [390,768]) {
+  await page.setViewportSize({width,height:1000});
+  for(const moduleId of [0,4,5,6,7]) {
+   const chapter=chapters.find(item=>item.module===moduleId&&item.id!=='ctc')!;
+   await page.goto(`./#/chapter/${chapter.id}`);
+   await page.getByRole('tab',{name:/^深入/}).click();
+   await expect(page.locator('#lesson-panel .lesson-section').first()).toBeVisible();
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)).toBeLessThanOrEqual(1);
+  }
+  await page.screenshot({path:testInfo.outputPath(`symbol-reader-${width}.png`),fullPage:true});
+ }
+});

@@ -1,0 +1,51 @@
+/* Symbols are part of the lesson, always visible and readable without hover. */
+.reading-tools { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:15px 0; border-block:1px solid var(--line); margin-top:22px; }
+.reading-tools p { font-size:13px; line-height:1.8; color:var(--muted); margin:0; }
+.reading-tools button { flex-shrink:0; font-size:12px; padding:9px 12px; }
+.reading-tools button[aria-pressed="true"] { color:var(--accent); background:var(--accent-soft); }
+.reader-layout.focus-reading { display:block; max-width:850px; margin-inline:auto; }
+.focus-reading>.sidebar,.focus-reading>.toc { display:none; }
+.notation-guide { border-left:3px solid var(--accent); background:var(--accent-soft); padding:16px 20px; margin:20px 0 24px; border-radius:0 7px 7px 0; }
+.notation-guide h3 { font-size:14px; font-weight:650; margin:0 0 12px; color:var(--accent); }
+.notation-guide dl { margin:0; }
+.notation-entry { display:grid; grid-template-columns:minmax(72px,auto) minmax(0,1fr); align-items:start; gap:14px; padding:10px 0; border-top:1px solid var(--line); }
+.notation-entry dt { max-width:180px; overflow-x:auto; font-size:15px; padding:2px 0; }
+.notation-entry dd { margin:0; font-size:14px; line-height:1.85; overflow-wrap:anywhere; }
+.notation-entry dd>span { display:block; }
+.notation-shape,.notation-example { color:var(--muted); font-size:12px; margin-top:3px; }
+.inline-symbol { white-space:nowrap; }
+.formula-reading { font-size:14px; line-height:1.9; border-top:1px solid var(--line); padding-top:18px; }
+.formula-reading>strong { display:block; color:var(--accent); font-size:12px; margin-bottom:5px; }
+.lesson-flow { margin:25px 0; padding:19px; border:1px solid var(--line); border-radius:8px; }
+.lesson-flow figcaption { font-size:12px; color:var(--muted); margin-bottom:15px; }
+.lesson-flow ol { list-style:none; padding:0; margin:0; }
+.lesson-flow li { display:flex; align-items:flex-start; gap:14px; position:relative; padding:0 0 20px; margin:0; }
+.lesson-flow li:last-child { padding-bottom:0; }
+.lesson-flow li:not(:last-child)::after { content:''; position:absolute; width:1px; background:var(--line); left:14px; top:30px; bottom:3px; }
+.flow-step-number { flex-shrink:0; width:29px; height:29px; display:grid; place-items:center; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-size:12px; }
+.lesson-flow strong { font-size:14px; }
+.lesson-flow li p { margin:5px 0 0; font-size:13px; line-height:1.8; color:var(--muted); }
+.lesson-checkpoint { border:1px solid var(--line); border-radius:7px; padding:15px 18px; margin:24px 0; }
+.lesson-checkpoint summary { cursor:pointer; font-size:14px; line-height:1.8; color:var(--accent); }
+.lesson-checkpoint p { margin-top:14px; }
+.lesson-section { scroll-margin-top:100px; }
+.lesson-section p { max-width:72ch; }
+.mobile-nav { max-height:calc(100vh - 64px); overflow-y:auto; }
+.symbol-key { padding:14px 16px; margin:15px 0; background:var(--accent-soft); border-radius:6px; font-size:13px; line-height:1.85; }
+.symbol-key>strong { font-size:12px; color:var(--accent); }
+.symbol-key dl { margin:6px 0 0; }
+.symbol-key dl>div { display:grid; grid-template-columns:110px minmax(0,1fr); gap:12px; padding:6px 0; }
+.symbol-key dt { font-weight:600; overflow-wrap:anywhere; }
+.symbol-key dd { margin:0; overflow-wrap:anywhere; }
+@media(max-width:680px) {
+ .reading-tools { align-items:flex-start; gap:10px; }
+ .reading-tools p { font-size:12px; }
+ .reading-tools button { font-size:11px; padding:8px; }
+ .notation-guide { padding:14px 12px; }
+ .notation-entry { grid-template-columns:1fr; gap:4px; padding:12px 0; }
+ .notation-entry dt { max-width:100%; }
+ .notation-entry dd { font-size:14px; }
+ .lesson-flow { padding:15px 12px; }
+ .lesson-checkpoint { padding:13px; }
+ .symbol-key dl>div { grid-template-columns:1fr; gap:1px; }
+}

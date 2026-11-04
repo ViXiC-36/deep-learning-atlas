@@ -5,7 +5,8 @@ import { chapters, chapterById } from '../src/content/chapters.ts';
 import { curriculum } from '../src/data/curriculum.ts';
 
 test('all published chapters have distinct routes and each learning mode has navigable content', () => {
-  assert.deepEqual(new Set(chapters.map(chapter => chapter.id)), new Set(['backprop', 'convolution', 'attention', 'ctc']));
+  assert.equal(new Set(chapters.map(chapter => chapter.id)).size, chapters.length, 'chapter routes must be unique');
+  for (const id of ['backprop', 'convolution', 'attention', 'ctc']) assert.ok(chapterById[id], 'existing deep links remain available');
   for (const chapter of chapters) {
     assert.equal(chapterById[chapter.id], chapter);
     assert.ok(curriculum.some(module => module.id === chapter.module));
@@ -16,11 +17,22 @@ test('all published chapters have distinct routes and each learning mode has nav
         assert.match(section.id, /^[a-z][a-z0-9-]*$/);
         assert.ok(section.title.trim());
         assert.ok(section.paragraphs.some(paragraph => paragraph.trim()), `${chapter.id}/${section.id} has no explanation`);
-        if (section.formula) assert.doesNotMatch(section.formula, /[\u0000-\u0008\u000b-\u001f]/, 'formula contains an accidental escape control character');
+        if (section.formula) {
+          assert.doesNotMatch(section.formula, /[\u0000-\u0008\u000b-\u001f]/, 'formula contains an accidental escape control character');
+          assert.ok(section.notation?.length, `${chapter.id}/${section.id}: formula needs nearby definitions`);
+          assert.ok(section.formulaReading?.trim(), `${chapter.id}/${section.id}: formula needs a plain-language reading`);
+        }
+        for (const notation of section.notation || []) {
+          assert.ok(notation.symbol.trim() && notation.meaning.trim());
+          assert.doesNotMatch(notation.symbol, /[\u0000-\u0008\u000b-\u001f]/, 'symbol contains an accidental escape');
+        }
       }
     }
     assert.ok(chapter.sections.implementation.some(section => section.code), `${chapter.id} needs an implementation example`);
     assert.ok(chapter.misconceptions.length > 0);
+    const sections = Object.values(chapter.sections).flat();
+    assert.ok(sections.some(section => section.flow?.length), `${chapter.id} needs a visual computation sequence`);
+    assert.ok(sections.some(section => section.checkpoint), `${chapter.id} needs a small self-check`);
     for (const reference of chapter.references) {
       assert.equal(new URL(reference.url).protocol, 'https:');
       assert.ok(reference.author && reference.title && reference.reason);
@@ -33,6 +45,7 @@ test('curriculum topics have stable unique routes, and ready entries point to re
   const topics = curriculum.flatMap(module => module.topics);
   assert.equal(new Set(topics.map(topic => topic.id)).size, topics.length);
   const chapterIds = new Set<string>(chapters.map(chapter => chapter.id));
+  assert.equal(topics.filter(topic => topic.status !== 'ready').length, 0, 'every curriculum topic should now have authored content');
   for (const topic of topics) {
     assert.match(topic.id, /^[a-z][a-z0-9-]*$/);
     if (topic.status === 'ready') {

@@ -1,3 +1,4 @@
+import SymbolKey from '../components/SymbolKey';
 import { useMemo, useState } from 'react';
 import { ctcCollapse, ctcDistribution, normalizeWeights } from '../lib/math';
 import './playgrounds.css';
@@ -48,7 +49,8 @@ export default function CTCPlayground() {
       </div>
       <p className="lab-note">修改四帧的分布，再编辑候选路径。这里真实枚举全部 3⁴ = 81 条路径，累加同一转写的概率；∅ 表示 Blank。</p>
 
-      <fieldset className="lab-fieldset">
+      <SymbolKey items={[["a、b、∅","a 与 b 是两个示例字符标签；∅ 表示 blank（不输出字符的标签），不是空格或静音。"],["π、x","π（派）是一条逐帧路径；x 是给定的整段输入。"],["P(π | x)","给定输入 x，这条路径的概率。竖线 | 读作“给定”。把 π 换成转写，就表示该转写的总概率。"],["3⁴、≠、→","3⁴ 表示四帧各三种选择，共 3×3×3×3 条路径；≠ 表示不等于；→ 表示折叠后得到。"]]}/>
+    <fieldset className="lab-fieldset">
         <legend>1 / 每帧概率 · Frame-level probabilities</legend>
         <p className="lab-note">输入非负权重，每列按帧归一化；整列为 0 时使用均匀分布。下方颜色与百分比展示实际参与计算的概率。</p>
         <div className="matrix-scroll" style={{ overflowX: 'auto' }}>

@@ -1,3 +1,4 @@
+import {chapterForTopic} from '../content/chapters.ts';
 export type CurriculumTopic = {
   id: string;
   title: string;
@@ -25,11 +26,10 @@ const ready = (
 ): CurriculumTopic => ({ id, title, english, status: 'ready', chapterId });
 
 /**
- * The complete editorial roadmap. `ready` means a substantial chapter exists;
- * all other topics remain explicitly planned, even when a related chapter
- * mentions the concept. Multiple entries may point to one shared chapter.
+ * The editorial topic index. Publication is resolved from authored chapter coverage
+ * below; multiple related topics may point to one substantial shared chapter.
  */
-export const curriculum: CurriculumModule[] = [
+const outline: CurriculumModule[] = [
   {
     id: 0,
     title: '数学与机器学习基础',
@@ -188,3 +188,6 @@ export const curriculum: CurriculumModule[] = [
     ],
   },
 ];
+
+// Publication follows authored coverage; related topics can share a substantial chapter.
+export const curriculum: CurriculumModule[] = outline.map(module=>({...module,topics:module.topics.map(topic=>{const chapterId=topic.chapterId||chapterForTopic[topic.id];return chapterId?{...topic,status:'ready' as const,chapterId}:topic;})}));

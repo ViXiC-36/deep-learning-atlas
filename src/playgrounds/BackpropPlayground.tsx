@@ -1,3 +1,4 @@
+import SymbolKey from '../components/SymbolKey';
 import { useEffect, useState } from 'react';
 import { scalarNetwork } from '../lib/math';
 import './playgrounds.css';
@@ -41,6 +42,7 @@ export default function BackpropPlayground() {
   return <div className="lab backprop-lab">
     <div className="lab-heading"><div><span className="lab-kicker">LIVE COMPUTATION</span><h3>让梯度走一遍计算图</h3></div><button type="button" onClick={reset}>重置</button></div>
     <p className="lab-note">单神经元教学模型 · 标量输入 · Tanh 激活。修改参数后，每个数值与导数都会重新计算。</p>
+    <SymbolKey items={[["x、w、b、y","依次是输入、权重、偏置、目标。它们在这个实验里都是一个数字（标量）。"],["z、a、L","z=xw+b 是激活前的数；a=tanh(z) 是预测；L 是预测与目标之间的平方误差的一半。"],["tanh、²、½","tanh 把数压到 −1 与 1 之间；² 表示乘自身；½ 表示一半。"],["∂L/∂w","偏导数：轻微改变 w 时，损失 L 的变化率。把 w 换成 a、z 或 b，读法相同。"],["η、←、SGD","η（伊塔）是学习率；← 表示把右侧结果赋给左侧参数；SGD 是随机梯度下降，这里用一个样本演示一步更新。"]]}/>
     <div className="lab-controls">
       {([['x','输入 x',-3,3],['w','权重 w',-3,3],['b','偏置 b',-3,3],['target','目标 y',-1,1]] as const).map(([key,label,min,max]) => <label key={key}>{label}<output>{fmt(params[key])}</output><input type="range" aria-label={label} min={Math.min(min,params[key])} max={Math.max(max,params[key])} step="0.05" value={params[key]} onChange={e => update(key,Number(e.target.value))}/></label>)}
     </div>
