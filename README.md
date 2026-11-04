@@ -24,7 +24,7 @@
 
 ## 本次交付验证状态
 
-源码、教学内容与部署配置已编写。数学单元测试和使用现有 esbuild 的外部依赖语法检查已通过。由于执行环境阻止依赖下载，完整 TypeScript 检查与 Vite 构建尚未运行；浏览器连接及安全检查中断，视觉和交互端到端验收尚未完成。GitHub 仓库已创建： https://github.com/ViXiC-36/deep-learning-atlas 。云端构建与 Pages 发布状态以 Actions 和实际站点为准。请勿把源码交付等同于已上线版本。
+完整源码已提交到 [ViXiC-36/deep-learning-atlas](https://github.com/ViXiC-36/deep-learning-atlas)。GitHub Actions 已完成依赖安装、18 项单元测试、TypeScript 检查和 Vite 生产构建。浏览器测试与 Pages 状态请查看最新 [Actions 运行](https://github.com/ViXiC-36/deep-learning-atlas/actions)。详细验证记录见 [docs/validation.md](docs/validation.md)。
 
 ## 本地运行
 

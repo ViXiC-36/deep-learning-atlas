@@ -96,6 +96,7 @@ test('convolution edits actually change output and stride, then reset restores t
 test('attention recomputes token dimensions, applies causal mask, exposes outputs, and resets', async ({ page }, testInfo) => {
   await openChapter(page, 'attention');
   const lab = page.locator('.attention-lab');
+  await expect(lab.getByRole('slider', { name: '温度 τ' })).toBeVisible();
   await lab.getByRole('textbox', { name: /输入短句/ }).fill('甲 乙');
   await expect(lab.locator('.heatmap-table tbody tr')).toHaveCount(2);
   await lab.getByRole('checkbox', { name: '因果掩码 Causal mask' }).check();

@@ -42,7 +42,7 @@ export default function BackpropPlayground() {
     <div className="lab-heading"><div><span className="lab-kicker">LIVE COMPUTATION</span><h3>让梯度走一遍计算图</h3></div><button type="button" onClick={reset}>重置</button></div>
     <p className="lab-note">单神经元教学模型 · 标量输入 · Tanh 激活。修改参数后，每个数值与导数都会重新计算。</p>
     <div className="lab-controls">
-      {([['x','输入 x',-3,3],['w','权重 w',-3,3],['b','偏置 b',-3,3],['target','目标 y',-1,1]] as const).map(([key,label,min,max]) => <label key={key}>{label}<output>{fmt(params[key])}</output><input type="range" min={Math.min(min,params[key])} max={Math.max(max,params[key])} step="0.05" value={params[key]} onChange={e => update(key,Number(e.target.value))}/></label>)}
+      {([['x','输入 x',-3,3],['w','权重 w',-3,3],['b','偏置 b',-3,3],['target','目标 y',-1,1]] as const).map(([key,label,min,max]) => <label key={key}>{label}<output>{fmt(params[key])}</output><input type="range" aria-label={label} min={Math.min(min,params[key])} max={Math.max(max,params[key])} step="0.05" value={params[key]} onChange={e => update(key,Number(e.target.value))}/></label>)}
     </div>
     <div className="gradient-flow" aria-label="前向与反向计算图">{nodes.map((node,index) => <div className={`flow-node ${node.active ? 'active' : ''}`} key={node.label}><span>{node.label}</span><strong>{fmt(node.value)}</strong><small>{node.text}</small>{index !== nodes.length - 1 && <span className={`flow-arrow ${step >= 4 ? 'reverse' : ''}`} aria-hidden="true">{step >= 4 ? '←' : '→'}</span>}</div>)}</div>
     <div className="step-description" aria-live="polite"><span className="step-number">{step + 1} / 7</span>{explanations[step]}</div>
@@ -50,7 +50,7 @@ export default function BackpropPlayground() {
     <div className="gradient-values stat-row">
       <div><span>∂L / ∂a</span><strong>{fmt(result.dActivation)}</strong></div><div><span>∂L / ∂z</span><strong>{fmt(result.dZ)}</strong></div><div><span>∂L / ∂w</span><strong>{fmt(result.dW)}</strong></div><div><span>∂L / ∂b</span><strong>{fmt(result.dB)}</strong></div>
     </div>
-    <div className="lab-controls"><label>学习率 η<output>{lr.toFixed(2)}</output><input type="range" min="0.01" max="2" step="0.01" value={lr} onChange={e=>setLr(Number(e.target.value))}/></label><button type="button" className="primary" onClick={train}>执行一次 SGD 更新</button></div>
+    <div className="lab-controls"><label>学习率 η<output>{lr.toFixed(2)}</output><input type="range" aria-label="学习率 η" min="0.01" max="2" step="0.01" value={lr} onChange={e=>setLr(Number(e.target.value))}/></label><button type="button" className="primary" onClick={train}>执行一次 SGD 更新</button></div>
     <p className="lab-note">w ← w − η ∂L/∂w；b ← b − η ∂L/∂b。大的学习率不保证每一步损失下降。把 z 推到饱和区，观察 tanh 如何压小梯度。</p>
     {!!history.length && <div className="loss-history" aria-live="polite"><span>最近 {history.length} 次更新的损失</span><div>{[...history,result.loss].map((value,index)=><span key={index} title={`第 ${index} 步：${value.toFixed(6)}`}>{value.toFixed(4)}{index<history.length?' → ':''}</span>)}</div></div>}
   </div>;
