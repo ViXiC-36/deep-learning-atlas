@@ -24,7 +24,7 @@
 
 ## 本次交付验证状态
 
-完整源码已提交到 [ViXiC-36/deep-learning-atlas](https://github.com/ViXiC-36/deep-learning-atlas)。GitHub Actions 已通过依赖安装、18 项单元测试、TypeScript 检查、Vite 生产构建和 8 项 Chromium 浏览器测试（含 390px 手机与 768px 平板）。[成功的验证运行](https://github.com/ViXiC-36/deep-learning-atlas/actions/runs/41781690268)。Pages API 当前返回 404，部署尚未执行；请先在 Settings → Pages 中选择 GitHub Actions。详细验证记录见 [docs/validation.md](docs/validation.md)。
+完整源码已提交到 [ViXiC-36/deep-learning-atlas](https://github.com/ViXiC-36/deep-learning-atlas)。GitHub Actions 已通过依赖安装、18 项单元测试、TypeScript 检查、Vite 生产构建和 8 项 Chromium 浏览器测试（含 390px 手机与 768px 平板）。[成功的验证运行](https://github.com/ViXiC-36/deep-learning-atlas/actions/runs/41795361062)。GitHub Pages 已部署成功，在线访问 [Deep Learning Atlas](https://vixic-36.github.io/deep-learning-atlas/)。详细验证记录见 [docs/validation.md](docs/validation.md)。
 
 ## 本地运行
 
@@ -47,7 +47,7 @@ npm run preview
 - `npm run build`：TypeScript 检查并生成 `dist/` 静态网站。
 - `npm run preview`：本地检查生产构建。
 
-云端安装生成的 `package-lock.json` 已保存在成功运行的 `validation-evidence` artifact 中，尚未回写源码；可下载并提交该文件固定依赖。首次本地运行 `npm install` 也会生成锁文件。工作流在有锁文件时使用 `npm ci`，否则使用 `npm install`。
+云端安装生成的 `package-lock.json` 已保存在成功运行的 `validation-evidence-<attempt>` artifact 中，尚未回写源码；可下载并提交该文件固定依赖。首次本地运行 `npm install` 也会生成锁文件。工作流在有锁文件时使用 `npm ci`，否则使用 `npm install`。
 
 ## GitHub Pages 部署
 
@@ -59,7 +59,7 @@ npm run preview
 4. 将源码及锁文件推送至 `main`，或在 **Actions → Deploy Deep Learning Atlas → Run workflow** 选择 `main`。
 5. 等待 `build` 和 `deploy` 两个 job 成功。以 deployment 输出或 Settings → Pages 显示的 URL 为准。
 
-项目站点的通常地址格式为 `https://<owner>.github.io/deep-learning-atlas/`。这只是地址格式，存在部署配置不代表已发布成功。
+本项目在线地址：[Deep Learning Atlas](https://vixic-36.github.io/deep-learning-atlas/)。Fork 后以该仓库的 deployment 输出或 Settings → Pages 显示的地址为准。
 
 Vite 使用 `base: './'`；导航使用 hash 路由。资源路径可适配仓库子路径，刷新章节链接时服务器仍请求同一个 `index.html`，无需服务器端 URL 重写或自定义 404 跳转。部署其他静态主机时直接托管 `dist/` 内容即可。
 
